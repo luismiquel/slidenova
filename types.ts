@@ -1,5 +1,6 @@
 
 export interface Slide {
+  id: string;
   title: string;
   content: string[];
   imagePrompt?: string;
@@ -12,7 +13,7 @@ export interface Presentation {
   subtitle: string;
   slides: Slide[];
   createdAt: string;
-  summary?: string; // IA generated summary of the project
+  summary?: string;
 }
 
 export interface User {
@@ -30,6 +31,8 @@ export enum AppState {
   IDLE = 'IDLE',
   GENERATING = 'GENERATING',
   VIEWING = 'VIEWING',
+  DASHBOARD = 'DASHBOARD',
+  EDITING = 'EDITING',
   ERROR = 'ERROR'
 }
 

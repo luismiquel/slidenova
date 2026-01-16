@@ -19,7 +19,13 @@ export const usePresentation = () => {
 
     try {
       const result = await generatePresentationFromText(text);
-      setPresentation(result);
+      // Ensure result has an ID and timestamp
+      const completeResult = {
+        ...result,
+        id: result.id || `nova_${Date.now()}`,
+        createdAt: new Date().toISOString()
+      };
+      setPresentation(completeResult);
       setState(AppState.VIEWING);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
@@ -35,5 +41,5 @@ export const usePresentation = () => {
     setError(null);
   }, []);
 
-  return { state, presentation, error, generate, reset };
+  return { state, presentation, error, generate, reset, setState, setPresentation };
 };
