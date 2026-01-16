@@ -1,0 +1,1 @@
+// This file has been replaced by TranscriptInput.tsx to better align with the rebranding architecture.

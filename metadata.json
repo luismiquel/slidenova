@@ -1,0 +1,8 @@
+{
+  "name": "SlideNova",
+  "description": "Crea presentaciones profesionales con inteligencia artificial. Transforma guiones y textos en diapositivas impactantes en segundos.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
