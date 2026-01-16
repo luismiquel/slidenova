@@ -13,12 +13,12 @@ import { useProtectedRoute } from './hooks/useProtectedRoute';
 import { AppState, Presentation } from './types';
 
 const AI_MESSAGES = [
-  "Iniciando el motor de inteligencia SlideNova...",
-  "Estructurando tu narrativa visual estratégica...",
-  "Destilando los puntos clave de mayor impacto...",
-  "Diseñando la jerarquía visual perfecta para ejecutivos...",
-  "Seleccionando paletas de acento de alta retención...",
-  "Generando activos conceptuales únicos...",
+  "Iniciando el motor Google Estudio...",
+  "Estructurando tu narrativa visual...",
+  "Destilando los puntos clave...",
+  "Diseñando la jerarquía visual de Google...",
+  "Seleccionando paletas de alta retención...",
+  "Generando activos conceptuales...",
   "Casi listo para tu nueva obra maestra..."
 ];
 
@@ -28,7 +28,6 @@ const App: React.FC = () => {
   const [showAuth, setShowAuth] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
   
-  // Mock Database for Dashboard (simulating Supabase)
   const [myNovas, setMyNovas] = useState<Presentation[]>([]);
 
   useEffect(() => {
@@ -45,7 +44,6 @@ const App: React.FC = () => {
 
   const isUserAuthenticated = useMemo(() => !!session.user, [session.user]);
 
-  // Protection logic: If in DASHBOARD or EDITING and not logged, go to landing or auth
   useProtectedRoute(session, () => setShowAuth(true), (state === AppState.DASHBOARD || state === AppState.EDITING));
 
   const handleGenerate = async (text: string) => {
@@ -56,7 +54,7 @@ const App: React.FC = () => {
     setMyNovas(prev => {
       const exists = prev.find(item => item.id === p.id);
       if (exists) return prev.map(item => item.id === p.id ? p : item);
-      return [...prev, { ...p, id: p.id || `nova_${Date.now()}`, createdAt: new Date().toISOString() }];
+      return [...prev, { ...p, id: p.id || `estudio_${Date.now()}`, createdAt: new Date().toISOString() }];
     });
     setState(AppState.DASHBOARD);
   };
@@ -76,15 +74,14 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col selection:bg-indigo-100 selection:text-indigo-700">
+    <div className="min-h-screen bg-slate-50 flex flex-col selection:bg-blue-100 selection:text-blue-700">
       <Header />
       
-      {/* Dynamic Header Actions */}
       <div className="absolute top-4 right-40 z-[60] hidden lg:flex items-center gap-6">
         {isUserAuthenticated && state !== AppState.DASHBOARD && (
           <button 
             onClick={() => setState(AppState.DASHBOARD)}
-            className="text-xs font-black text-indigo-600 hover:text-indigo-800 transition-all uppercase tracking-widest bg-indigo-50 px-4 py-2 rounded-xl"
+            className="text-xs font-black text-[#4285F4] hover:text-blue-800 transition-all uppercase tracking-widest bg-blue-50 px-4 py-2 rounded-xl"
           >
             Mis Proyectos
           </button>
@@ -92,7 +89,7 @@ const App: React.FC = () => {
         {!isUserAuthenticated && !showAuth && (
           <button 
             onClick={() => setShowAuth(true)}
-            className="text-xs font-black text-slate-500 hover:text-indigo-600 transition-all focus:ring-2 focus:ring-indigo-500 rounded-lg px-3 py-1 bg-white shadow-sm border border-slate-100"
+            className="text-xs font-black text-slate-500 hover:text-[#4285F4] transition-all focus:ring-2 focus:ring-blue-500 rounded-lg px-3 py-1 bg-white shadow-sm border border-slate-100"
           >
             ACCESO MIEMBROS
           </button>
@@ -122,14 +119,14 @@ const App: React.FC = () => {
             {state === AppState.GENERATING && (
               <div className="flex flex-col items-center justify-center py-32 text-center animate-in fade-in duration-500" role="status" aria-live="polite">
                 <div className="relative w-48 h-48 mb-16">
-                  <div className="absolute inset-0 border-[16px] border-indigo-50 rounded-[4rem]"></div>
-                  <div className="absolute inset-0 border-[16px] border-t-indigo-600 rounded-[4rem] animate-spin-slow"></div>
-                  <div className="absolute inset-4 border-[1px] border-indigo-200 border-dashed rounded-[3rem] animate-reverse-spin"></div>
-                  <div className="absolute inset-0 flex items-center justify-center font-black text-indigo-600 text-4xl">SN</div>
+                  <div className="absolute inset-0 border-[16px] border-blue-50 rounded-[4rem]"></div>
+                  <div className="absolute inset-0 border-[16px] border-t-[#4285F4] rounded-[4rem] animate-spin-slow"></div>
+                  <div className="absolute inset-4 border-[1px] border-blue-200 border-dashed rounded-[3rem] animate-reverse-spin"></div>
+                  <div className="absolute inset-0 flex items-center justify-center font-black text-[#4285F4] text-4xl">GE</div>
                 </div>
-                <h2 className="text-5xl font-black text-slate-900 mb-6 tracking-tight">SlideNova está creando...</h2>
+                <h2 className="text-5xl font-black text-slate-900 mb-6 tracking-tight">Google Estudio está creando...</h2>
                 <div className="space-y-4 min-h-[6rem] max-w-lg mx-auto">
-                  <p className="text-indigo-600 font-black text-2xl transition-all duration-700 animate-pulse">{AI_MESSAGES[loadingStep]}</p>
+                  <p className="text-[#4285F4] font-black text-2xl transition-all duration-700 animate-pulse">{AI_MESSAGES[loadingStep]}</p>
                   <p className="text-slate-400 font-bold tracking-wide uppercase text-sm">PROCESANDO • {loadingStep + 1}/{AI_MESSAGES.length}</p>
                 </div>
               </div>
@@ -160,7 +157,7 @@ const App: React.FC = () => {
                    <div className="mt-12 flex justify-center gap-6">
                       <button 
                         onClick={() => handleSaveToDashboard(presentation)}
-                        className="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-black shadow-xl shadow-indigo-100 transition-all hover:-translate-y-1 active:scale-95"
+                        className="bg-[#4285F4] text-white px-10 py-4 rounded-2xl font-black shadow-xl shadow-blue-100 transition-all hover:-translate-y-1 active:scale-95"
                       >
                         Guardar en mi Biblioteca
                       </button>
@@ -184,7 +181,7 @@ const App: React.FC = () => {
                 </div>
                 <h2 className="text-4xl font-black text-rose-900 mb-4 tracking-tight">Error de Generación</h2>
                 <p className="text-rose-700 mb-12 text-xl font-bold leading-relaxed">{error}</p>
-                <button onClick={reset} className="bg-rose-600 text-white px-14 py-5 rounded-3xl font-black text-xl hover:bg-rose-700 transition-all shadow-2xl shadow-rose-200">Reiniciar SlideNova</button>
+                <button onClick={reset} className="bg-rose-600 text-white px-14 py-5 rounded-3xl font-black text-xl hover:bg-rose-700 transition-all shadow-2xl shadow-rose-200">Reiniciar Google Estudio</button>
               </div>
             )}
           </>
@@ -195,18 +192,18 @@ const App: React.FC = () => {
         <div className="container mx-auto px-4 flex flex-col lg:flex-row justify-between items-center gap-12">
             <div className="flex flex-col items-center lg:items-start gap-4">
               <div className="flex items-center gap-3">
-                 <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-sm">SN</div>
-                 <span className="text-2xl font-black text-slate-900 tracking-tighter">SlideNova AI</span>
+                 <div className="w-10 h-10 bg-[#4285F4] rounded-xl flex items-center justify-center text-white font-black text-sm">GE</div>
+                 <span className="text-2xl font-black text-slate-900 tracking-tighter">Google Estudio AI</span>
               </div>
-              <p className="text-slate-400 text-sm font-bold text-center lg:text-left max-w-sm">La plataforma líder para la automatización de presentaciones de alto impacto.</p>
+              <p className="text-slate-400 text-sm font-bold text-center lg:text-left max-w-sm">La plataforma líder para la automatización de presentaciones de impacto.</p>
             </div>
             <div className="text-slate-500 text-sm font-bold text-center">
-              &copy; {new Date().getFullYear()} SlideNova AI. <br />
-              <span className="text-indigo-600">IA de nivel ejecutivo.</span>
+              &copy; {new Date().getFullYear()} Google Estudio AI. <br />
+              <span className="text-[#4285F4]">Potenciado por Google Gemini.</span>
             </div>
             <nav className="flex gap-10 text-xs font-black text-slate-400 uppercase tracking-widest">
-              <a href="#" className="hover:text-indigo-600 transition-colors">Privacidad</a>
-              <a href="#" className="hover:text-indigo-600 transition-colors">Términos</a>
+              <a href="#" className="hover:text-[#4285F4] transition-colors">Privacidad</a>
+              <a href="#" className="hover:text-[#4285F4] transition-colors">Términos</a>
             </nav>
         </div>
       </footer>

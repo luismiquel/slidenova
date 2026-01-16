@@ -1,6 +1,6 @@
 {
-  "name": "SlideNova",
-  "description": "Crea presentaciones profesionales con inteligencia artificial. Transforma guiones y textos en diapositivas impactantes en segundos.",
+  "name": "Google Estudio",
+  "description": "Crea presentaciones profesionales con inteligencia artificial. Transforma guiones y textos en diapositivas impactantes en segundos con la tecnología de Google.",
   "requestFramePermissions": [
     "camera",
     "microphone"
