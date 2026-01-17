@@ -1,35 +1,26 @@
-# SlideNova
+# SlideNova AI
 
-**Presentaciones creadas por IA, en segundos.**
+**Presentaciones de impacto global creadas por IA en segundos.**
 
-SlideNova es una aplicación web de vanguardia que transforma tus ideas, textos, guiones o transcripciones en presentaciones profesionales y cautivadoras mediante el uso de inteligencia artificial avanzada.
+SlideNova es el motor de diseño definitivo para profesionales. Transforma guiones, documentos o transcripciones en narrativas visuales coherentes, estéticamente superiores y listas para presentar.
 
-## 🚀 Características principales
+## 🚀 Características Pro
 
-- **✍️ Creación Inteligente**: Escribe o pega tu texto y deja que la IA estructure el contenido.
-- **📁 Soporte de Archivos**: Sube documentos `.txt` o `.md` directamente.
-- **⚡️ Generación Nova**: Presentaciones listas en menos de 10 segundos.
-- **✅ Sin Fricción**: Experiencia fluida sin registro obligatorio para comenzar.
-- **🎨 Estética Premium**: Diseños de nivel ejecutivo con jerarquía visual optimizada.
-- **📤 Exportación Ágil**: Herramientas para compartir y visualizar al instante.
-- **🤖 Motor de IA**: Impulsado por Gemini 3 Pro para un razonamiento superior.
+- **✍️ Generación Multimodal**: Admite texto plano, markdown y archivos `.txt`.
+- **🛡️ Resiliencia Inteligente**: Clasificación de errores interna para una experiencia fluida.
+- **⚡️ Motor SlideNova v5.0**: Optimizado para modelos de lenguaje de última generación.
+- **🎨 Diseño de Alta Retención**: Estética corporativa moderna basada en principios de diseño de clase mundial.
+- **🛠️ Editor Integrado**: Refina cada detalle de tu estudio antes de compartirlo.
 
-## 🛠️ Tecnologías
+## 🧠 Clasificación de Errores
+SlideNova incluye un sistema avanzado de manejo de excepciones que diferencia entre límites de capacidad, bloqueos de seguridad de contenido y errores de infraestructura, ofreciendo siempre una salida clara al usuario.
 
-- **Frontend**: React 19 + Vite
-- **Estilos**: Tailwind CSS + shadcn/ui (estética)
-- **Backend/Auth**: Supabase (soporte para persistencia)
-- **Lenguaje**: TypeScript
-- **IA**: Google Gemini API (@google/genai)
-
-## 📦 Instalación local
+## 📦 Instalación
 
 ```bash
-git clone https://github.com/tu-usuario/slidenova.git
-cd slidenova
 npm install
 npm run dev
 ```
 
-## 🧠 Misión
-SlideNova nace para democratizar el diseño de alta calidad, permitiendo que cualquier persona con una gran idea pueda presentarla de forma profesional sin perder horas en herramientas de diseño tradicionales.
+---
+*Powered by SlideNova Architecture.*

@@ -1,9 +1,8 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { AuthSession, User } from '../types';
 
 /**
- * Hook to manage authentication (Mockup for Supabase/Auth systems)
+ * Hook para gestionar la autenticación en SlideNova
  */
 export const useAuth = () => {
   const [session, setSession] = useState<AuthSession>({
@@ -12,7 +11,6 @@ export const useAuth = () => {
   });
 
   useEffect(() => {
-    // Check for existing session in localStorage
     try {
       const savedUser = localStorage.getItem('slidenova_user');
       if (savedUser) {
@@ -21,14 +19,13 @@ export const useAuth = () => {
         setSession({ user: null, loading: false });
       }
     } catch (e) {
-      console.error("Failed to parse auth session", e);
+      console.error("Fallo al procesar la sesión de SlideNova", e);
       setSession({ user: null, loading: false });
     }
   }, []);
 
   const login = useCallback(async (email: string): Promise<User> => {
     setSession(prev => ({ ...prev, loading: true }));
-    // Simulate network delay for real UX feel
     await new Promise(resolve => setTimeout(resolve, 1200));
     
     const mockUser: User = { 

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ValidationStatus } from '../types';
 
 interface TranscriptInputProps {
@@ -7,27 +7,20 @@ interface TranscriptInputProps {
   isLoading: boolean;
 }
 
-const MIN_CHARS = 100;
+const MIN_CHARS = 50; 
 const MAX_CHARS = 5000;
-const WARNING_THRESHOLD = 4500;
 
 const TranscriptInput: React.FC<TranscriptInputProps> = ({ onGenerate, isLoading }) => {
   const [text, setText] = useState('');
-  const [status, setStatus] = useState<ValidationStatus>('idle');
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const validateText = useCallback((val: string) => {
-    const len = val.length;
-    if (len === 0) return 'idle';
-    if (len < MIN_CHARS) return 'invalid';
-    if (len > MAX_CHARS) return 'invalid';
-    if (len > WARNING_THRESHOLD) return 'warning';
-    return 'valid';
-  }, []);
+  const validation = useMemo(() => {
+    const len = text.length;
+    if (len === 0) return { status: 'idle' as ValidationStatus, message: 'Escribe tu idea...' };
+    if (len < MIN_CHARS) return { status: 'invalid' as ValidationStatus, message: `Faltan ${MIN_CHARS - len} caracteres` };
+    return { status: 'valid' as ValidationStatus, message: 'Listo para brillar con SlideNova' };
+  }, [text]);
 
-  useEffect(() => {
-    setStatus(validateText(text));
-  }, [text, validateText]);
+  const { status, message } = validation;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,128 +29,54 @@ const TranscriptInput: React.FC<TranscriptInputProps> = ({ onGenerate, isLoading
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!file.name.endsWith('.txt') && !file.name.endsWith('.md')) {
-      alert("Solo se admiten archivos .txt o .md");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const content = event.target?.result as string;
-      setText(content);
-    };
-    reader.readAsText(file);
-  };
-
-  const statusColors = {
-    idle: 'border-slate-100 focus:border-blue-500',
-    valid: 'border-emerald-100 focus:border-emerald-500',
-    warning: 'border-amber-200 focus:border-amber-500',
-    invalid: 'border-rose-200 focus:border-rose-500',
-  };
-
   return (
-    <div 
-      id="create-section" 
-      role="region" 
-      aria-labelledby="form-title"
-      className="w-full max-w-4xl mx-auto bg-white rounded-[2.5rem] shadow-2xl p-8 md:p-12 border border-slate-100 transition-all hover:shadow-blue-100/50"
-    >
-      <div className="mb-10 text-center md:text-left">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 text-[#4285F4] text-xs font-black uppercase tracking-widest mb-6">
-          <span className="relative flex h-2 w-2" aria-hidden="true">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#4285F4]"></span>
-          </span>
-          Estudio Engine v4.0
-        </div>
-        <h2 id="form-title" className="text-4xl font-black text-slate-900 mb-3 tracking-tight">Panel de Inteligencia</h2>
-        <p className="text-slate-500 text-lg font-medium">
-          Google Estudio requiere al menos {MIN_CHARS} caracteres para generar una estructura coherente y profesional.
-        </p>
+    <div id="create-section" className="w-full max-w-4xl mx-auto bg-white rounded-[2.5rem] shadow-2xl p-10 border border-slate-100 relative overflow-hidden group">
+      <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50/50 rounded-full blur-3xl -mr-32 -mt-32 transition-colors group-hover:bg-indigo-100/50"></div>
+      
+      <div className="mb-8 relative z-10">
+        <h2 className="text-3xl font-black text-slate-900 mb-2">Área de Creación</h2>
+        <p className="text-slate-500 font-medium">Introduce tu guion o notas. SlideNova las transformará en una narrativa profesional.</p>
       </div>
       
-      <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="relative group">
-          <label htmlFor="nova-input" className="sr-only">Escribe o pega el contenido aquí</label>
-          <textarea
-            id="nova-input"
-            className={`w-full h-80 p-8 bg-slate-50 border-2 rounded-[2rem] focus:ring-8 focus:ring-blue-500/5 transition-all outline-none resize-none text-slate-700 text-lg leading-relaxed placeholder:text-slate-300 ${statusColors[status]}`}
-            placeholder="Pega aquí el contenido de tu presentación, guion o notas..."
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            disabled={isLoading}
-            aria-invalid={status === 'invalid'}
-            aria-describedby="char-feedback"
-          />
-          
-          <div 
-            id="char-feedback"
-            role="status"
-            className={`absolute bottom-6 right-8 text-sm font-bold px-4 py-2 rounded-full backdrop-blur-md shadow-sm border transition-all ${
-              status === 'invalid' ? 'text-rose-600 bg-rose-50 border-rose-100' : 
-              status === 'warning' ? 'text-amber-600 bg-amber-50 border-amber-100' :
-              status === 'valid' ? 'text-emerald-600 bg-emerald-50 border-emerald-100' :
-              'text-slate-400 bg-white/80 border-slate-100'
-            }`}
-          >
-            {text.length} / {MAX_CHARS} 
-            {text.length > 0 && text.length < MIN_CHARS && <span className="ml-2 font-normal text-xs">(Faltan {MIN_CHARS - text.length})</span>}
-          </div>
-        </div>
+      <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+        <textarea
+          className="w-full h-72 p-8 bg-slate-50 border-2 border-transparent focus:border-indigo-400 rounded-[2rem] outline-none resize-none text-slate-800 text-lg leading-relaxed placeholder:text-slate-300 transition-all shadow-inner"
+          placeholder="Escribe o pega aquí tu contenido para empezar..."
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          disabled={isLoading}
+        />
         
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-8 pt-4 border-t border-slate-50">
-          <div className="relative w-full sm:w-auto">
-            <input
-              type="file"
-              id="file-upload"
-              ref={fileInputRef}
-              accept=".txt,.md"
-              onChange={handleFileUpload}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-              disabled={isLoading}
-              title="Cargar archivo .txt o .md"
-            />
-            <button 
-              type="button"
-              tabIndex={-1}
-              className="w-full flex items-center justify-center gap-3 text-sm font-extrabold text-slate-600 bg-white border-2 border-slate-100 px-6 py-4 rounded-2xl group-hover:border-blue-200 transition-all pointer-events-none"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-              </svg>
-              Cargar .txt / .md
-            </button>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3 bg-slate-100 px-4 py-2 rounded-full">
+            <div className={`w-2 h-2 rounded-full ${status === 'invalid' ? 'bg-rose-400' : 'bg-emerald-400'} animate-pulse`}></div>
+            <span className={`text-xs font-black uppercase tracking-wider ${status === 'invalid' ? 'text-rose-500' : 'text-slate-500'}`}>
+              {text.length} / {MAX_CHARS} • {message}
+            </span>
           </div>
-          
           <button
             type="submit"
-            disabled={isLoading || status === 'invalid' || text.length < MIN_CHARS}
-            className={`w-full sm:w-auto px-12 py-5 rounded-2xl font-black transition-all flex items-center justify-center gap-4 text-xl shadow-xl ${
-              isLoading || status === 'invalid' || text.length < MIN_CHARS
-              ? 'bg-slate-100 text-slate-300 cursor-not-allowed border-2 border-slate-100 shadow-none' 
-              : 'bg-[#4285F4] text-white hover:bg-blue-700 shadow-blue-200 hover:-translate-y-1 active:scale-95'
+            disabled={isLoading || status === 'invalid'}
+            className={`w-full sm:w-auto px-12 py-4 rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 ${
+              isLoading || status === 'invalid'
+              ? 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none' 
+              : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-xl shadow-indigo-100 hover:-translate-y-1'
             }`}
-            aria-busy={isLoading}
           >
             {isLoading ? (
-              <>
-                <svg className="animate-spin h-6 w-6 text-white" viewBox="0 0 24 24" aria-hidden="true">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Iniciando Estudio...
-              </>
+               <>
+                 <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                 </svg>
+                 Generando...
+               </>
             ) : (
               <>
-                Crear Estudio
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.642.28a6 6 0 01-3.86.517l-2.387-.477a2 2 0 00-1.022.547l-1.16 1.16a2 2 0 00.442 3.322l1.61.805a2 2 0 001.583 0l1.61-.805a2 2 0 00.442-3.322l-1.16-1.16zm0 0L19 14.5a3 3 0 00-3-3h-2.5m-9 0L4.5 11.5a3 3 0 003-3H10m-3 0V5a2 2 0 012-2h2a2 2 0 012 2v2.5M10 11.5v3" />
                 </svg>
+                Crear SlideNova
               </>
             )}
           </button>

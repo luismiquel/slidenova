@@ -3,33 +3,38 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { Presentation } from "../types";
 
 const getAIClient = () => {
-  if (!process.env.API_KEY) {
-    throw new Error("Google Estudio Error: API_KEY no configurada.");
+  const apiKey = process.env.API_KEY;
+  if (!apiKey || apiKey === "") {
+    throw new Error("NO_API_KEY");
   }
-  return new GoogleGenAI({ apiKey: process.env.API_KEY });
+  return new GoogleGenAI({ apiKey });
 };
 
+/**
+ * Genera una presentación profesional utilizando el motor SlideNova.
+ */
 export const generatePresentationFromText = async (input: string): Promise<Presentation> => {
   const ai = getAIClient();
   
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-pro-preview",
-      contents: `Actúa como un experto en diseño de presentaciones profesionales (Google Estudio). 
-      Analiza el siguiente contenido y transfórmalo en una narrativa visual coherente: "${input}". 
+      model: "gemini-3-flash-preview",
+      contents: `Actúa como el motor inteligente de SlideNova AI, diseñado por Luis Miguel Garcia de las Morenas. 
+      Tu misión es transformar este contenido en una narrativa visual coherente y profesional: "${input}". 
       
-      Reglas críticas:
-      1. Tono profesional, minimalista y persuasivo.
-      2. Máximo 15 palabras por punto clave.
-      3. Genera prompts de imagen abstractos y modernos.
-      4. El formato debe ser estrictamente JSON.`,
+      Reglas de Diseño SlideNova:
+      1. Tono inspirador, directo y profesional.
+      2. Crea una estructura de 5-8 diapositivas con flujo lógico.
+      3. Cada diapositiva debe tener un título impactante y máximo 4 puntos clave (bullets).
+      4. Asigna colores de acento en hexadecimal que combinen con el estilo Indigo/Cyan de la marca.
+      5. Devuelve estrictamente un objeto JSON.`,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
           properties: {
-            mainTitle: { type: Type.STRING, description: "Título principal impactante" },
-            subtitle: { type: Type.STRING, description: "Eslogan descriptivo" },
+            mainTitle: { type: Type.STRING },
+            subtitle: { type: Type.STRING },
             slides: {
               type: Type.ARRAY,
               items: {
@@ -38,7 +43,7 @@ export const generatePresentationFromText = async (input: string): Promise<Prese
                   title: { type: Type.STRING },
                   content: {
                     type: Type.ARRAY,
-                    items: { type: Type.STRING, description: "Puntos clave" }
+                    items: { type: Type.STRING }
                   },
                   imagePrompt: { type: Type.STRING },
                   accentColor: { type: Type.STRING }
@@ -52,19 +57,31 @@ export const generatePresentationFromText = async (input: string): Promise<Prese
       }
     });
 
-    const text = response.text;
-    if (!text) throw new Error("Respuesta vacía del motor de Estudio.");
-    
-    const parsedData = JSON.parse(text);
-    
-    return {
-      ...parsedData,
-      id: `estudio_${Date.now()}`,
-      createdAt: new Date().toISOString()
-    } as Presentation;
+    if (response.candidates?.[0]?.finishReason === 'SAFETY') {
+      throw new Error("SAFETY_BLOCK");
+    }
 
-  } catch (error) {
-    console.error("Critical Failure in Google Estudio Engine:", error);
-    throw new Error("El motor Google Estudio tuvo un problema técnico. Reintenta con un texto más corto.");
+    const text = response.text;
+    if (!text) throw new Error("EMPTY_RESPONSE");
+    
+    try {
+      const parsedData = JSON.parse(text);
+      return {
+        ...parsedData,
+        slides: parsedData.slides.map((s: any, i: number) => ({
+          ...s,
+          id: `sn_slide_${Date.now()}_${i}`
+        })),
+        id: `sn_proj_${Date.now()}`,
+        createdAt: new Date().toISOString()
+      } as Presentation;
+    } catch (e) {
+      console.error("JSON Parse Error in SlideNova Engine:", e);
+      throw new Error("PARSE_ERROR");
+    }
+
+  } catch (error: any) {
+    console.error("SlideNova Engine Error:", error);
+    throw new Error(error.message || "UNKNOWN_ERROR");
   }
 };

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import CreatePage from './components/CreatePage';
@@ -13,22 +13,22 @@ import { useProtectedRoute } from './hooks/useProtectedRoute';
 import { AppState, Presentation } from './types';
 
 const AI_MESSAGES = [
-  "Iniciando el motor Google Estudio...",
+  "Iniciando el motor SlideNova AI...",
   "Estructurando tu narrativa visual...",
   "Destilando los puntos clave...",
-  "Diseñando la jerarquía visual de Google...",
+  "Diseñando la jerarquía visual Nova...",
   "Seleccionando paletas de alta retención...",
   "Generando activos conceptuales...",
   "Casi listo para tu nueva obra maestra..."
 ];
 
 const App: React.FC = () => {
-  const { session, login, logout } = useAuth();
+  const { session, logout } = useAuth();
   const { state, presentation, error, generate, reset, setState, setPresentation } = usePresentation();
   const [showAuth, setShowAuth] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
   
-  const [myNovas, setMyNovas] = useState<Presentation[]>([]);
+  const [myProjects, setMyProjects] = useState<Presentation[]>([]);
 
   useEffect(() => {
     let interval: number | undefined;
@@ -51,16 +51,16 @@ const App: React.FC = () => {
   };
 
   const handleSaveToDashboard = (p: Presentation) => {
-    setMyNovas(prev => {
+    setMyProjects(prev => {
       const exists = prev.find(item => item.id === p.id);
       if (exists) return prev.map(item => item.id === p.id ? p : item);
-      return [...prev, { ...p, id: p.id || `estudio_${Date.now()}`, createdAt: new Date().toISOString() }];
+      return [...prev, { ...p, id: p.id || `nova_${Date.now()}`, createdAt: new Date().toISOString() }];
     });
     setState(AppState.DASHBOARD);
   };
 
-  const deleteNova = (id: string) => {
-    setMyNovas(prev => prev.filter(p => p.id !== id));
+  const deleteProject = (id: string) => {
+    setMyProjects(prev => prev.filter(p => p.id !== id));
   };
 
   const startEdit = (p: Presentation) => {
@@ -68,20 +68,20 @@ const App: React.FC = () => {
     setState(AppState.EDITING);
   };
 
-  const viewNova = (p: Presentation) => {
+  const viewProject = (p: Presentation) => {
     setPresentation(p);
     setState(AppState.VIEWING);
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col selection:bg-blue-100 selection:text-blue-700">
+    <div className="min-h-screen bg-slate-50 flex flex-col selection:bg-indigo-100 selection:text-indigo-700">
       <Header />
       
       <div className="absolute top-4 right-40 z-[60] hidden lg:flex items-center gap-6">
         {isUserAuthenticated && state !== AppState.DASHBOARD && (
           <button 
             onClick={() => setState(AppState.DASHBOARD)}
-            className="text-xs font-black text-[#4285F4] hover:text-blue-800 transition-all uppercase tracking-widest bg-blue-50 px-4 py-2 rounded-xl"
+            className="text-xs font-black text-indigo-600 hover:text-indigo-800 transition-all uppercase tracking-widest bg-indigo-50 px-4 py-2 rounded-xl"
           >
             Mis Proyectos
           </button>
@@ -89,7 +89,7 @@ const App: React.FC = () => {
         {!isUserAuthenticated && !showAuth && (
           <button 
             onClick={() => setShowAuth(true)}
-            className="text-xs font-black text-slate-500 hover:text-[#4285F4] transition-all focus:ring-2 focus:ring-blue-500 rounded-lg px-3 py-1 bg-white shadow-sm border border-slate-100"
+            className="text-xs font-black text-slate-500 hover:text-indigo-600 transition-all focus:ring-2 focus:ring-indigo-500 rounded-lg px-3 py-1 bg-white shadow-sm border border-slate-100"
           >
             ACCESO MIEMBROS
           </button>
@@ -119,14 +119,14 @@ const App: React.FC = () => {
             {state === AppState.GENERATING && (
               <div className="flex flex-col items-center justify-center py-32 text-center animate-in fade-in duration-500" role="status" aria-live="polite">
                 <div className="relative w-48 h-48 mb-16">
-                  <div className="absolute inset-0 border-[16px] border-blue-50 rounded-[4rem]"></div>
-                  <div className="absolute inset-0 border-[16px] border-t-[#4285F4] rounded-[4rem] animate-spin-slow"></div>
-                  <div className="absolute inset-4 border-[1px] border-blue-200 border-dashed rounded-[3rem] animate-reverse-spin"></div>
-                  <div className="absolute inset-0 flex items-center justify-center font-black text-[#4285F4] text-4xl">GE</div>
+                  <div className="absolute inset-0 border-[16px] border-indigo-50 rounded-[4rem]"></div>
+                  <div className="absolute inset-0 border-[16px] border-t-indigo-600 rounded-[4rem] animate-spin-slow"></div>
+                  <div className="absolute inset-4 border-[1px] border-indigo-200 border-dashed rounded-[3rem] animate-reverse-spin"></div>
+                  <div className="absolute inset-0 flex items-center justify-center font-black text-indigo-600 text-4xl">S</div>
                 </div>
-                <h2 className="text-5xl font-black text-slate-900 mb-6 tracking-tight">Google Estudio está creando...</h2>
+                <h2 className="text-5xl font-black text-slate-900 mb-6 tracking-tight">SlideNova está creando...</h2>
                 <div className="space-y-4 min-h-[6rem] max-w-lg mx-auto">
-                  <p className="text-[#4285F4] font-black text-2xl transition-all duration-700 animate-pulse">{AI_MESSAGES[loadingStep]}</p>
+                  <p className="text-indigo-600 font-black text-2xl transition-all duration-700 animate-pulse">{AI_MESSAGES[loadingStep]}</p>
                   <p className="text-slate-400 font-bold tracking-wide uppercase text-sm">PROCESANDO • {loadingStep + 1}/{AI_MESSAGES.length}</p>
                 </div>
               </div>
@@ -134,11 +134,11 @@ const App: React.FC = () => {
 
             {state === AppState.DASHBOARD && (
               <Dashboard 
-                presentations={myNovas} 
+                presentations={myProjects} 
                 onCreateNew={() => setState(AppState.IDLE)} 
-                onSelect={viewNova}
+                onSelect={viewProject}
                 onEdit={startEdit}
-                onDelete={deleteNova}
+                onDelete={deleteProject}
               />
             )}
 
@@ -153,35 +153,49 @@ const App: React.FC = () => {
             {state === AppState.VIEWING && presentation && (
               <div className="w-full animate-in zoom-in-95 fade-in duration-1000">
                  <PresentationViewer presentation={presentation} onReset={reset} />
-                 {isUserAuthenticated && (
-                   <div className="mt-12 flex justify-center gap-6">
-                      <button 
-                        onClick={() => handleSaveToDashboard(presentation)}
-                        className="bg-[#4285F4] text-white px-10 py-4 rounded-2xl font-black shadow-xl shadow-blue-100 transition-all hover:-translate-y-1 active:scale-95"
-                      >
-                        Guardar en mi Biblioteca
-                      </button>
-                      <button 
-                        onClick={() => setState(AppState.EDITING)}
-                        className="bg-white text-slate-700 border-2 border-slate-100 px-10 py-4 rounded-2xl font-black transition-all hover:bg-slate-50"
-                      >
-                        Refinar en el Editor
-                      </button>
-                   </div>
-                 )}
+                 <div className="mt-12 flex justify-center gap-6">
+                    <button 
+                      onClick={() => handleSaveToDashboard(presentation)}
+                      className="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-black shadow-xl shadow-indigo-100 transition-all hover:-translate-y-1 active:scale-95"
+                    >
+                      Guardar en mi Biblioteca
+                    </button>
+                    <button 
+                      onClick={() => setState(AppState.EDITING)}
+                      className="bg-white text-slate-700 border-2 border-slate-100 px-10 py-4 rounded-2xl font-black transition-all hover:bg-slate-50"
+                    >
+                      Refinar en el Editor
+                    </button>
+                 </div>
               </div>
             )}
 
             {state === AppState.ERROR && (
-              <div className="max-w-2xl w-full text-center py-20 bg-rose-50 rounded-[4rem] border-8 border-white shadow-2xl p-16 animate-in zoom-in duration-300">
-                <div className="w-28 h-28 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-10" aria-hidden="true">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-14 w-14 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="max-w-3xl w-full text-center py-20 bg-white rounded-[4rem] border border-slate-100 shadow-2xl p-16 animate-in zoom-in duration-300 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-2 bg-rose-500"></div>
+                <div className="w-28 h-28 bg-rose-50 rounded-[2rem] flex items-center justify-center mx-auto mb-10 rotate-3" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-14 w-14 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                 </div>
-                <h2 className="text-4xl font-black text-rose-900 mb-4 tracking-tight">Error de Generación</h2>
-                <p className="text-rose-700 mb-12 text-xl font-bold leading-relaxed">{error}</p>
-                <button onClick={reset} className="bg-rose-600 text-white px-14 py-5 rounded-3xl font-black text-xl hover:bg-rose-700 transition-all shadow-2xl shadow-rose-200">Reiniciar Google Estudio</button>
+                <h2 className="text-4xl font-black text-slate-900 mb-4 tracking-tight">Vaya, algo no salió bien</h2>
+                <p className="text-slate-500 mb-12 text-xl font-medium leading-relaxed max-w-xl mx-auto">
+                  {error}
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <button 
+                    onClick={reset} 
+                    className="bg-slate-900 text-white px-10 py-5 rounded-[1.5rem] font-black text-lg hover:bg-indigo-600 transition-all shadow-xl active:scale-95"
+                  >
+                    Intentar de Nuevo
+                  </button>
+                  <button 
+                    onClick={() => window.location.reload()} 
+                    className="bg-white text-slate-600 border-2 border-slate-100 px-10 py-5 rounded-[1.5rem] font-black text-lg hover:bg-slate-50 transition-all"
+                  >
+                    Reiniciar App
+                  </button>
+                </div>
               </div>
             )}
           </>
@@ -192,18 +206,18 @@ const App: React.FC = () => {
         <div className="container mx-auto px-4 flex flex-col lg:flex-row justify-between items-center gap-12">
             <div className="flex flex-col items-center lg:items-start gap-4">
               <div className="flex items-center gap-3">
-                 <div className="w-10 h-10 bg-[#4285F4] rounded-xl flex items-center justify-center text-white font-black text-sm">GE</div>
-                 <span className="text-2xl font-black text-slate-900 tracking-tighter">Google Estudio AI</span>
+                 <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-xl italic shadow-md">S</div>
+                 <span className="text-2xl font-black text-slate-900 tracking-tighter">SlideNova AI</span>
               </div>
-              <p className="text-slate-400 text-sm font-bold text-center lg:text-left max-w-sm">La plataforma líder para la automatización de presentaciones de impacto.</p>
+              <p className="text-slate-400 text-sm font-bold text-center lg:text-left max-w-sm">La plataforma independiente líder para la automatización de presentaciones de impacto.</p>
             </div>
             <div className="text-slate-500 text-sm font-bold text-center">
-              &copy; {new Date().getFullYear()} Google Estudio AI. <br />
-              <span className="text-[#4285F4]">Potenciado por Google Gemini.</span>
+              IDEADO POR <span className="text-indigo-600 font-black">LUIS MIGUEL GARCIA DE LAS MORENAS</span><br />
+              &copy; {new Date().getFullYear()} SlideNova. Potenciado por tecnología de vanguardia.
             </div>
             <nav className="flex gap-10 text-xs font-black text-slate-400 uppercase tracking-widest">
-              <a href="#" className="hover:text-[#4285F4] transition-colors">Privacidad</a>
-              <a href="#" className="hover:text-[#4285F4] transition-colors">Términos</a>
+              <a href="#" className="hover:text-indigo-600 transition-colors">Privacidad</a>
+              <a href="#" className="hover:text-indigo-600 transition-colors">Términos</a>
             </nav>
         </div>
       </footer>

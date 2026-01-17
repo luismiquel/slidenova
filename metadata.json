@@ -1,6 +1,6 @@
 {
-  "name": "Google Estudio",
-  "description": "Crea presentaciones profesionales con inteligencia artificial. Transforma guiones y textos en diapositivas impactantes en segundos con la tecnología de Google.",
+  "name": "SlideNova AI",
+  "description": "Tu motor personal de presentaciones. Diseñado por Luis Miguel Garcia de las Morenas. Un proyecto de creación inteligente.",
   "requestFramePermissions": [
     "camera",
     "microphone"

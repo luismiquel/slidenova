@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { Presentation } from '../types';
 
@@ -59,17 +58,17 @@ const PresentationViewer: React.FC<PresentationViewerProps> = ({ presentation, o
             </svg>
           </div>
           <div className="space-y-4">
-            <h2 className="text-5xl font-black text-slate-900 tracking-tight">¡Estudio Finalizado!</h2>
+            <h2 className="text-5xl font-black text-slate-900 tracking-tight">¡SlideNova Completado!</h2>
             <p className="text-slate-500 text-xl font-medium max-w-2xl mx-auto leading-relaxed">
-              Google Estudio ha transformado exitosamente tus ideas en una narrativa visual de {presentation.slides.length + 1} diapositivas.
+              SlideNova ha transformado exitosamente tus ideas en una narrativa visual de {presentation.slides.length + 1} diapositivas.
             </p>
           </div>
           
           <div className="bg-slate-50 rounded-3xl p-8 border border-slate-100 text-left">
              <h3 className="text-xs font-black text-[#4285F4] uppercase tracking-widest mb-4">Resumen del Proyecto</h3>
              <p className="text-slate-700 font-bold leading-relaxed">
-               Esta presentación aborda "{presentation.mainTitle}" con un enfoque en {presentation.subtitle.toLowerCase()}. 
-               Se han incluido {presentation.slides.length} secciones clave optimizadas por IA.
+               Esta presentación aborda "{presentation.mainTitle}" con un enfoque profesional. 
+               Se han incluido {presentation.slides.length} secciones clave optimizadas por el motor de SlideNova.
              </p>
           </div>
 
@@ -78,7 +77,7 @@ const PresentationViewer: React.FC<PresentationViewerProps> = ({ presentation, o
               onClick={onReset}
               className="bg-[#4285F4] text-white px-10 py-5 rounded-2xl font-black text-lg hover:bg-blue-700 shadow-2xl shadow-blue-100 transition-all active:scale-95"
             >
-              Crear Nuevo Proyecto
+              Crear Nuevo Slide
             </button>
             <button className="bg-white text-slate-700 border-2 border-slate-100 px-10 py-5 rounded-2xl font-black text-lg hover:bg-slate-50 transition-all">
               Exportar a PDF
@@ -90,7 +89,7 @@ const PresentationViewer: React.FC<PresentationViewerProps> = ({ presentation, o
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-6" role="main" aria-label="Visor de presentación Google Estudio">
+    <div className="w-full max-w-5xl mx-auto space-y-6" role="main" aria-label="Visor de presentación SlideNova">
       <div className="flex items-center justify-between mb-4">
         <button 
           onClick={onReset}
@@ -156,7 +155,7 @@ const PresentationViewer: React.FC<PresentationViewerProps> = ({ presentation, o
               </div>
               <div className="hidden lg:block w-2/5 aspect-[3/4] bg-slate-100 rounded-[3rem] overflow-hidden shadow-2xl relative border-[12px] border-white">
                  <img 
-                    src={`https://picsum.photos/seed/estudio-${currentSlideIndex}/1200/1600`} 
+                    src={`https://picsum.photos/seed/slidenova-${currentSlideIndex}/1200/1600`} 
                     alt={`Visualización para: ${currentSlide?.title}`} 
                     className="object-cover w-full h-full grayscale-[5%] hover:grayscale-0 transition-all duration-1000 scale-105 hover:scale-100"
                  />
